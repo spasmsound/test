@@ -1,5 +1,6 @@
 #!/bin/bash
 
 DIRNAME="$( cd "$( dirname "$0" )" && pwd )"
+source "${DIRNAME}/helpers.sh"
 
-docker-compose -p bhs exec php bash -c "composer $1"
+compose exec php bash -c "composer $1"
