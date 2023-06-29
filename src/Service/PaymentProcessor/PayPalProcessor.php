@@ -2,14 +2,16 @@
 
 namespace App\Service\PaymentProcessor;
 
-use App\Entity\Product;
+use App\Constants\PaymentProcessors;
 use App\Exception\PaymentProcessException;
 use App\Service\SDK\PaypalPaymentProcessor;
+use App\Transformer\PriceTransformer;
 
 readonly class PayPalProcessor implements PaymentProcessor
 {
     public function __construct(
-        private PaypalPaymentProcessor $paypalPaymentProcessor
+        private PaypalPaymentProcessor $paypalPaymentProcessor,
+        private PriceTransformer $priceTransformer
     )
     {
     }
@@ -17,10 +19,10 @@ readonly class PayPalProcessor implements PaymentProcessor
     /**
      * @throws PaymentProcessException
      */
-    public function pay(int $amount, Product $product): void
+    public function pay(int $amount): void
     {
         try {
-            $this->paypalPaymentProcessor->pay($amount / 100);
+            $this->paypalPaymentProcessor->pay($this->priceTransformer->reverseTransform($amount));
         } catch (\Exception $e) {
             throw new PaymentProcessException($this->getName(), $e->getMessage());
         }
@@ -28,7 +30,7 @@ readonly class PayPalProcessor implements PaymentProcessor
 
     public function getName(): string
     {
-        return 'paypal';
+        return PaymentProcessors::PAYPAL;
     }
 
     public function isSupport(string $name): bool

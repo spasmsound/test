@@ -2,7 +2,6 @@
 
 namespace App\Service\PaymentProcessor;
 
-use App\Entity\Product;
 use App\Exception\PaymentProcessException;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -14,8 +13,7 @@ interface PaymentProcessor
     /**
      * @throws PaymentProcessException
      */
-    public function pay(int $amount, Product $product): void;
-
+    public function pay(int $amount): void;
 
     public function getName(): string;
 }

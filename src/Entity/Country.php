@@ -3,11 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity]
+#[UniqueEntity('name', 'isoCode')]
 class Country
 {
     use HasId;
+
+    #[ORM\Column(type: 'string')]
+    private string $name;
 
     #[ORM\Column(type: 'string', length: 2)]
     private string $isoCode;
@@ -46,5 +51,15 @@ class Country
     public function setTaxPercentage(int $taxPercentage): void
     {
         $this->taxPercentage = $taxPercentage;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 }

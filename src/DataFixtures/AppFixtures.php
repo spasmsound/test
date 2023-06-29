@@ -5,11 +5,18 @@ namespace App\DataFixtures;
 use App\Entity\Country;
 use App\Entity\Coupon;
 use App\Entity\Product;
+use App\Service\CouponService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(
+        private readonly CouponService $couponService
+    )
+    {
+    }
+
     /**
      * @throws \Exception
      */
@@ -26,6 +33,7 @@ class AppFixtures extends Fixture
     {
         $germany = new Country();
         $germany->setIsoCode('DE');
+        $germany->setName('Germany');
         $germany->setTaxNumberPattern('/^DE\d{9}$/');
         $germany->setTaxPercentage(19);
 
@@ -33,6 +41,7 @@ class AppFixtures extends Fixture
 
         $italy = new Country();
         $italy->setIsoCode('IT');
+        $italy->setName('Italy');
         $italy->setTaxNumberPattern('/^IT\d{11}$/');
         $italy->setTaxPercentage(22);
 
@@ -40,6 +49,7 @@ class AppFixtures extends Fixture
 
         $greece = new Country();
         $greece->setIsoCode('GR');
+        $greece->setName('Greece');
         $greece->setTaxNumberPattern('/^GR\d{9}$/');
         $greece->setTaxPercentage(24);
 
@@ -47,6 +57,7 @@ class AppFixtures extends Fixture
 
         $france = new Country();
         $france->setIsoCode('FR');
+        $france->setName('France');
         $france->setTaxNumberPattern('/^FR[a-zA-Z]{2}\d{9}$/');
 
         $manager->persist($france);
@@ -81,12 +92,14 @@ class AppFixtures extends Fixture
         $fixed = new Coupon();
         $fixed->setType(Coupon::TYPE_FIXED);
         $fixed->setValue(2000);
+        $fixed->setCode($this->couponService->generateCouponCode());
 
         $objectManager->persist($fixed);
 
         $percent = new Coupon();
         $percent->setType(Coupon::TYPE_PERCENT);
         $percent->setValue(10);
+        $percent->setCode($this->couponService->generateCouponCode());
 
         $objectManager->persist($percent);
     }

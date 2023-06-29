@@ -2,14 +2,16 @@
 
 namespace App\Service\PaymentProcessor;
 
-use App\Entity\Product;
+use App\Constants\PaymentProcessors;
 use App\Exception\PaymentProcessException;
 use App\Service\SDK\StripePaymentProcessor;
+use App\Transformer\PriceTransformer;
 
 readonly class StripeProcessor implements PaymentProcessor
 {
     public function __construct(
-        private StripePaymentProcessor $stripePaymentProcessor
+        private StripePaymentProcessor $stripePaymentProcessor,
+        private PriceTransformer $priceTransformer
     )
     {
     }
@@ -17,18 +19,18 @@ readonly class StripeProcessor implements PaymentProcessor
     /**
      * @throws PaymentProcessException
      */
-    public function pay(int $amount, Product $product): void
+    public function pay(int $amount): void
     {
-        $result = $this->stripePaymentProcessor->processPayment($amount / 100);
+        $result = $this->stripePaymentProcessor->processPayment($this->priceTransformer->reverseTransform($amount));
 
         if (!$result) {
-            throw new PaymentProcessException($this->getName());
+            throw new PaymentProcessException($this->getName(), 'Too low price');
         }
     }
 
     public function getName(): string
     {
-        return 'stripe';
+        return PaymentProcessors::STRIPE;
     }
 
     public function isSupport(string $name): bool

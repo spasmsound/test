@@ -18,6 +18,9 @@ class Coupon
     #[ORM\Column(type: 'integer')]
     private int $value;
 
+    #[ORM\Column(type: 'string', unique: true)]
+    private string $code;
+
     public function getType(): string
     {
         return $this->type;
@@ -43,5 +46,15 @@ class Coupon
     public function setValue(int $value): void
     {
         $this->value = $value;
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): void
+    {
+        $this->code = $code;
     }
 }

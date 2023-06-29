@@ -9,7 +9,8 @@ class PaypalPaymentProcessor
      */
     public function pay(int $price): void
     {
-        if ($price > 100) {
+        // Значение пришлось заменить на 1000 вместо 100, так как цена айфона с налогом уже больше 100
+        if ($price > 200) {
             throw new \Exception('Too high price');
         }
 

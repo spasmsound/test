@@ -25,6 +25,6 @@ readonly class PaymentService
             }
         }
 
-        throw new PaymentProcessException();
+        throw new PaymentProcessException(message: 'Payment processor with name "' . $name . '" not found');
     }
 }
