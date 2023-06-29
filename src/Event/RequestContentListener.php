@@ -42,6 +42,30 @@ class RequestContentListener
             return new JsonResponse('Request body is empty', Response::HTTP_BAD_REQUEST);
         }
 
+        $errors = [];
+        if (!isset($content['product'])) {
+            $errors[] = 'Missing Product ID';
+        }
+
+        if (!isset($content['paymentProcessor'])) {
+            $errors[] = 'Missing Payment Processor name';
+        }
+
+        if (!isset($content['taxNumber'])) {
+            $errors[] = 'Missing TAX number';
+        }
+
+        if (
+            $request->get('_route') === 'app_product_calculate_price' &&
+            !isset($content['amount'])
+        ) {
+            $errors[] = 'Missing amount';
+        }
+
+        if (0 !== count($errors)) {
+            return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
+        }
+
         $request->request->set('requestData', $content);
 
         return null;
